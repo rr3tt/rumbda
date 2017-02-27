@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'rumbda'
+
+class RumbdaCLI < Thor
+  desc 'build', 'Builds the zip file for lambda.'
+  method_option 'cleanup', type: :boolean, aliases: '-c'
+  def build(dir_to_build = FileUtils.pwd)
+    Rumbda::Build.run(dir_to_build, options)
+  end
+
+  private
+
+  map '-v' => :version, '--version' => :version
+  desc '-v (--version)', 'Outputs the version of rumbda.'
+  def version
+    puts Rumbda::VERSION
+  end
+end
+
+RumbdaCLI.start(ARGV)
