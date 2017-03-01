@@ -1,5 +1,4 @@
 require 'thor'
-require 'highline/import'
 require 'open-uri'
 require 'bundler'
 require 'fileutils'
