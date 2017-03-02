@@ -1,4 +1,4 @@
-# rumbda [![Gem Version](https://badge.fury.io/rb/rumbda.svg)](https://badge.fury.io/rb/rumbda)
+# rumbda ![Build](https://travis-ci.org/kleaver/rumbda.svg?branch=master) [![Gem Version](https://badge.fury.io/rb/rumbda.svg)](https://badge.fury.io/rb/rumbda)
 A command line tool to build zip files for running ruby on aws lambda.
 
 ## Installation
