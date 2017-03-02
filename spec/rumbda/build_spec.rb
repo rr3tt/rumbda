@@ -51,4 +51,25 @@ RSpec.describe Rumbda::Build do
       Rumbda::Build.check_for_files(target_dir)
     end
   end
+
+  describe '.create_zip_file' do
+    let(:source) { 'create_zip_file_source' }
+    let(:source_files) { (0..5).map { |n| File.join(source, "source_#{n}") } }
+    let(:destination) { 'test_index.zip' }
+
+    before :example do
+      FileUtils.mkdir(source)
+      source_files.each { |source_file| FileUtils.touch(source_file) }
+    end
+
+    after :example do
+      FileUtils.rm_rf(source)
+      FileUtils.rm_rf(destination)
+    end
+
+    it 'creates a zip file from the source directory' do
+      Rumbda::Build.create_zip_file(source, destination)
+      expect(File.exist?(destination)).to be true
+    end
+  end
 end
