@@ -2,5 +2,11 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'byebug'
-gem 'rspec', '~> 3.5.0'
+group :test, :development do
+  gem 'rake', '~> 12.0'
+  gem 'rspec', '~> 3.5'
+end
+
+group :development do
+  gem 'byebug'
+end
