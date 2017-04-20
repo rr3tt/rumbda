@@ -47,3 +47,11 @@ bundle exec rumbda build
 ```
 After the index.zip file is built, follow the steps for [configuring the lambda](#configuring-the-lambda).
 
+## Environment Variables and Events
+Lambda environment variables are availble to main.rb via `ENV['<variable name>']`.  See [the example](example/main.rb#L8).
+
+The Lambda Event is available to the script via `ARGV[0]`.  See [the example](example/main.rb#L9).  
+If testing the script locally, simply pass in a json as the first argument to the script:
+```
+$ ruby main.rb "$(cat test_event.json)"
+```
