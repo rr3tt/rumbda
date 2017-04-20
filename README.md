@@ -28,10 +28,10 @@ rumbda build [directory]
 ```
 
 ### Configuring the lambda
-0. Set **Runtime** to `Node.js 4.3`.
-0. Set **Code entry type** to `Upload a .ZIP file`.
-0. In the **Function package** upload `index.zip` (the zip created by `rumbda build <directory>`).
-0. Set **Handler** to `index.handler`.
+1. Set **Runtime** to `Node.js 4.3`.
+1. Set **Code entry type** to `Upload a .ZIP file`.
+1. In the **Function package** upload `index.zip` (the zip created by `rumbda build <directory>`).
+1. Set **Handler** to `index.handler`.
 
 ## Example
 See the [example folder](example/) for what a project using rumbda might look like.
