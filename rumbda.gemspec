@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.authors       = ['kleaver']
   gem.email         = []
   gem.summary       = 'Easily run ruby on lambda!'
-  gem.description   = 'A command line tool to build zip files for running ruby on aws lambda.'
+  gem.description   = 'Run ruby scripts on aws lambda.'
   gem.homepage      = 'https://github.com/kleaver/rumbda'
   gem.licenses      = ['MIT']
 
