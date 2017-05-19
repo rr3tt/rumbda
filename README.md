@@ -14,24 +14,30 @@ end
 ```
 
 ## What does rumbda do?
-rumbda does everything necessary to build a zip file for running ruby inside of an AWS Lambda. This includes downloading [traveling ruby](https://github.com/phusion/traveling-ruby) and creating a bundle of the project's Gemfile dependencies, creating a consumable .zip file for use with Lambda.
+Rumbda does everything necessary to build a zip file for running ruby inside of an AWS Lambda. This includes downloading [traveling ruby](https://github.com/phusion/traveling-ruby), creating a bundle of the project's Gemfile dependencies, and creating a consumable .zip file for use with Lambda.
 
-## Usage
-Ensure target directory has the following files: `main.rb`, `Gemfile`, `Gemfile.lock`.
-`main.rb` is the entry point to the ruby script. The `Gemfile` and `Gemfile.lock` are where gems are specified.
+## Getting Started
+Run `rumbda init` in the directory you'd like to have your Lambda project. This will create the following files in the current directory: `source/main.rb`, `Gemfile`, `.gitignore`, and `.ruby-version`. `source/main.rb` is the entry point to the ruby script. The `Gemfile` and `Gemfile.lock` are where gems are specified.
 
-### Building the zip
-
+## Building the zip
 ```
-rumbda build [directory]
-# => creates a file called "index.zip"
+rumbda build
+# => creates a file "index.zip" which contains all files in "source/" and all gems specified in the "Gemfile"
 ```
 
-### Configuring the lambda
-1. Set **Runtime** to `Node.js 4.3`.
+### Configuring the Lambda
+1. Set **Runtime** to `Node.js 6.10`.
+
+    <img src="images/node_js_version.png" alt="node_js_version.png" width=50%/>
 1. Set **Code entry type** to `Upload a .ZIP file`.
-1. In the **Function package** upload `index.zip` (the zip created by `rumbda build <directory>`).
+
+    <img src="images/code_entry_type.png" alt="images/code_entry_type.png" width=50%/>
+1. In the **Function package** upload `index.zip` (the zip created by `rumbda build`).
+
+    <img src="images/select_index_zip.png" alt="select_index_zip.png" width=50%/>
 1. Set **Handler** to `index.handler`.
+
+    <img src="images/handler.png" alt="handler.png" width=50%/>
 
 ## Example
 See the [example folder](example/) for what a project using rumbda might look like.
@@ -45,13 +51,19 @@ bundle install
 bundle exec rumbda build
 #=> builds the index.zip file
 ```
-After the index.zip file is built, follow the steps for [configuring the lambda](#configuring-the-lambda).
+After the index.zip file is built, follow the steps for [Configuring the Lambda](#configuring-the-lambda).
 
 ## Environment Variables and Events
-Lambda environment variables are availble to main.rb via `ENV['<variable name>']`.  See [the example](example/main.rb#L8).
+Lambda environment variables are available to main.rb via `ENV['<variable name>']`.  See [the example](example/source/main.rb#L8).
 
-The Lambda Event is available to the script via `ARGV[0]`.  See [the example](example/main.rb#L9).  
+The Lambda Event is available to the script via `ARGV[0]`.  See [the example](example/source/main.rb#L9).
 If testing the script locally, simply pass in a json as the first argument to the script:
 ```
 $ ruby main.rb "$(cat test_event.json)"
 ```
+
+## Command Reference
+| Command        | Purpose                                                                                                                    |
+|:---------------|:---------------------------------------------------------------------------------------------------------------------------|
+| `rumbda init`  | Initializes a directory as rumbda project.                                                                                 |
+| `rumbda build` | Packages everything in `./source/` directory as well as gems specified in the `Gemfile` into a zip file called `index.zip` |

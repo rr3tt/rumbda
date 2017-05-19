@@ -5,11 +5,14 @@ require 'rumbda'
 class RumbdaCLI < Thor
   desc 'build', 'Builds the zip file for lambda.'
   method_option 'cleanup', type: :boolean, aliases: '-c'
-  def build(dir_to_build = FileUtils.pwd)
-    Rumbda::Build.run(dir_to_build, options)
+  def build
+    Rumbda::Build.run(FileUtils.pwd, options)
   end
 
-  private
+  desc 'init', 'Sets up the current directory as a rumbda project (creates `source/main.rb`, `.ruby-version`, `Gemfile`, and `.gitignore`).'
+  def init
+    Rumbda::Init.run(FileUtils.pwd)
+  end
 
   map '-v' => :version, '--version' => :version
   desc '-v (--version)', 'Outputs the version of rumbda.'

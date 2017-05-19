@@ -3,12 +3,13 @@ require_relative '../../lib/rumbda'
 RSpec.describe Rumbda::Build do
   describe '.check_for_files' do
     let(:target_dir) { 'test' }
-    let(:main_rb) { File.join(target_dir, 'main.rb') }
+    let(:main_rb) { File.join(target_dir, 'source', 'main.rb') }
     let(:gemfile) { File.join(target_dir, 'Gemfile') }
     let(:gemfile_lock) { File.join(target_dir, 'Gemfile.lock') }
 
     before :example do
       FileUtils.mkdir(target_dir)
+      FileUtils.mkdir(File.join(target_dir, 'source'))
       FileUtils.touch(main_rb)
       FileUtils.touch(gemfile)
       FileUtils.touch(gemfile_lock)

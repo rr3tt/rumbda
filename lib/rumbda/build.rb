@@ -15,7 +15,9 @@ module Rumbda
 
       FileUtils.mkdir_p(dest_source_code_dir)
       FileUtils.mkdir_p(vendor_dir)
-      FileUtils.cp_r(Dir.glob(File.join(dir_to_build, '*')) - [temp_dir], dest_source_code_dir)
+      FileUtils.cp_r(Dir.glob(File.join(dir_to_build, 'source', '*')), dest_source_code_dir)
+      FileUtils.cp_r(File.join(dir_to_build, 'Gemfile'), dest_source_code_dir)
+      FileUtils.cp_r(File.join(dir_to_build, 'Gemfile.lock'), dest_source_code_dir)
       FileUtils.mv(File.join(dest_source_code_dir, 'Gemfile'), vendor_dir)
       FileUtils.mv(File.join(dest_source_code_dir, 'Gemfile.lock'), vendor_dir)
 
@@ -119,17 +121,14 @@ module Rumbda
     end
 
     def self.check_for_files(dir_to_build)
-      unless File.exist?(File.join(dir_to_build, 'main.rb'))
-        abort("Must have a file named 'main.rb' in #{dir_to_build}")
-      end
+      main_rb = File.join(dir_to_build, 'source', 'main.rb')
+      abort("Must have file #{main_rb}") unless File.exist?(main_rb)
 
-      unless File.exist?(File.join(dir_to_build, 'Gemfile'))
-        abort("Must have a file named 'Gemfile' in #{dir_to_build}")
-      end
+      gemfile = File.join(dir_to_build, 'Gemfile')
+      abort("Must have file #{gemfile}") unless File.exist?(gemfile)
 
-      unless File.exist?(File.join(dir_to_build, 'Gemfile.lock'))
-        abort("Must have a file named 'Gemfile.lock' in #{dir_to_build}")
-      end
+      gemfile_lock = File.join(dir_to_build, 'Gemfile.lock')
+      abort("Must have file #{gemfile_lock}") unless File.exist?(gemfile_lock)
     end
   end
 end
