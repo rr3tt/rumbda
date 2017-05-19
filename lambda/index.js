@@ -1,7 +1,7 @@
 const exec = require('child_process').exec;
 
 exports.handler = function(event, context) {
-  const child = exec('./ruby_wrapper ' + "'" +  JSON.stringify(event) + "'", (result) => {
+  const child = exec('./ruby_wrapper ' + "'" +  JSON.stringify(event) + "' '" + JSON.stringify(context) + "'", (result) => {
     context.done(result);
   });
 
