@@ -1,3 +1,3 @@
 module Rumbda
-  VERSION = '0.3.0.SNAPSHOT'.freeze
+  VERSION = '1.0.0'.freeze
 end
