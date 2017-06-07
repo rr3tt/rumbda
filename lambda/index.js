@@ -5,6 +5,14 @@ exports.handler = function(event, context) {
     context.done(result);
   });
 
-  child.stdout.on('data', console.log);
-  child.stderr.on('data', console.error);
+  child.stdout.on('data', function (data) {
+    data.split("\n").forEach(function(x) {
+      console.log(x);
+    });
+  });
+  child.stderr.on('data', function (data) {
+    data.split("\n").forEach(function(x) {
+      console.log(x);
+    });
+  });
 };
