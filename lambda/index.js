@@ -1,21 +1,40 @@
 const exec = require('child_process').exec;
+const queue = require('queue');
+
+function processRecord(record) {
+  const child = exec('./ruby_wrapper ' + "'" +  JSON.stringify(record) + "' '" + JSON.stringify(context) + "'", (result) => {
+    context.done(result);
+  });
+
+  child.stdout.on('data', function (data) {
+    data.split("\n").forEach(function(x) {
+      console.log(x);
+    });
+  });
+  child.stderr.on('data', function (data) {
+    data.split("\n").forEach(function(x) {
+      console.log(x);
+    });
+  });
+};
 
 exports.handler = function(event, context) {
   var context = context;
-  event['Records'].forEach(function(record) {
-    const child = exec('./ruby_wrapper ' + "'" +  JSON.stringify(record) + "' '" + JSON.stringify(context) + "'", (result) => {
-      context.done(result);
-    });
+  var records = event['Records']
 
-    child.stdout.on('data', function (data) {
-      data.split("\n").forEach(function(x) {
-        console.log(x);
-      });
+  var q = queue();
+  records.forEach(function(record) {
+    q.push(function(cb) {
+      processRecord(record);
+      cb();
     });
-    child.stderr.on('data', function (data) {
-      data.split("\n").forEach(function(x) {
-        console.log(x);
-      });
-    });
+  });
+
+  q.on('success', function(result, job) {
+    console.log('job finished processing:', job.toString().replace(/\n/g, ''));
+  });
+
+  q.start(function(err) {
+    console.log('all done!');
   });
 };

@@ -43,6 +43,11 @@ module Rumbda
           File.expand_path(File.join('..', '..', '..', 'lambda', 'index.js'), __FILE__),
           'index.js'
         )
+
+        FileUtils.cp_r(
+          File.expand_path(File.join('..', '..', '..', 'lambda', 'node_modules'), __FILE__),
+          'node_modules'
+        )
       end
 
       create_zip_file(TEMP_DIRECTORY_NAME, 'index.zip')
