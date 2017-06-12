@@ -1,7 +1,7 @@
 const exec = require('child_process').exec;
 const queue = require('queue');
 
-function processRecord(record) {
+var processRecord = function(record, context) {
   const child = exec('./ruby_wrapper ' + "'" +  JSON.stringify(record) + "' '" + JSON.stringify(context) + "'", (result) => {
     context.done(result);
   });
@@ -25,7 +25,7 @@ exports.handler = function(event, context) {
   var q = queue();
   records.forEach(function(record) {
     q.push(function(cb) {
-      processRecord(record);
+      processRecord(record, context);
       cb();
     });
   });
