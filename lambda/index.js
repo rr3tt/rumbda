@@ -1,40 +1,39 @@
-const exec = require('child_process').exec;
-const queue = require('queue');
-
-var processRecord = function(record, context) {
-  const child = exec('./ruby_wrapper ' + "'" +  JSON.stringify(record) + "' '" + JSON.stringify(context) + "'", (result) => {
-    context.done(result);
-  });
-
-  child.stdout.on('data', function (data) {
-    data.split("\n").forEach(function(x) {
-      console.log(x);
-    });
-  });
-  child.stderr.on('data', function (data) {
-    data.split("\n").forEach(function(x) {
-      console.log(x);
-    });
-  });
-};
+const execFile = require('child_process').execFile;
 
 exports.handler = function(event, context) {
+  const chunkSize = 5;
+
+  var records = event.Records;
   var context = context;
-  var records = event['Records']
 
-  var q = queue();
-  records.forEach(function(record) {
-    q.push(function(cb) {
-      processRecord(record, context);
-      cb();
+  console.log("Received " + records.length + " records.")
+
+  var chunkOffset = 0;
+  var chunks = []
+
+  while (chunkOffset < records.length) {
+    chunks.push(records.slice(chunkOffset, chunkOffset + chunkSize));
+    chunkOffset += chunkSize;
+  }
+
+  chunks.forEach(function(chunk, index) {
+      const child = execFile('./ruby_wrapper', [JSON.stringify(chunk), JSON.stringify(context)], {}, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      stdout.trim().split("\n").forEach(function(x) {
+        log = x.trim();
+        if (log !== "") {
+          console.log(log);
+        }
+      });
+      stderr.trim().split("\n").forEach(function(x) {
+        log = x.trim();
+        if (log !== "") {
+          console.log(log);
+        }
+      });
     });
-  });
-
-  q.on('success', function(result, job) {
-    console.log('job finished processing:', job.toString().replace(/\n/g, ''));
-  });
-
-  q.start(function(err) {
-    console.log('all done!');
   });
 };
