@@ -17,11 +17,7 @@ exports.handler = function(event, context) {
   }
 
   chunks.forEach(function(chunk, index) {
-      const child = execFile('./ruby_wrapper', [JSON.stringify(chunk), JSON.stringify(context)], {}, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return;
-      }
+    const child = execFile('./ruby_wrapper', [JSON.stringify(chunk), JSON.stringify(context)], {}, (error, stdout, stderr) => {
       stdout.trim().split("\n").forEach(function(x) {
         log = x.trim();
         if (log !== "") {
@@ -34,6 +30,10 @@ exports.handler = function(event, context) {
           console.log(log);
         }
       });
+      if (error) {
+        console.error(`exec error: ${error}`);
+        process.exit(1);
+      }
     });
   });
 };
