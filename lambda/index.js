@@ -1,7 +1,7 @@
 const execFile = require('child_process').execFile;
 
 exports.handler = function(event, context) {
-  const chunkSize = 5;
+  const chunkSize = 10;
 
   var records = event.Records;
   var context = context;
