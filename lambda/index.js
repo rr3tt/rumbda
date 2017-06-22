@@ -1,4 +1,5 @@
 const execFile = require('child_process').execFile;
+const fs = require("fs");
 
 exports.handler = function(event, context) {
   const chunkSize = process.env.CHUNK_SIZE || 10;
@@ -8,17 +9,13 @@ exports.handler = function(event, context) {
 
   console.log("Received " + records.length + " records.")
 
-  var chunkOffset = 0;
-  var chunks = []
+  var fileName = "/tmp/" + context.invokeid + ".json";
 
-  while (chunkOffset < records.length) {
-    chunks.push(records.slice(chunkOffset, chunkOffset + chunkSize));
-    chunkOffset += chunkSize;
-  }
+  fs.writeFile(fileName, JSON.stringify(records), (err) => {
+    if (err) throw err;
 
-  chunks.forEach(function(chunk, index) {
-    const child = execFile('./ruby_wrapper', [JSON.stringify(chunk), JSON.stringify(context)], {}, (error, stdout, stderr) => {
-      stdout.trim().split("\n").forEach(function(x) {
+    execFile('./ruby_wrapper', [fileName, JSON.stringify(context)], {}, (error, stdout, stderr) => {
+      stdout.trim().split("\n").forEach(function(x)
         log = x.trim();
         if (log !== "") {
           console.log(log);
