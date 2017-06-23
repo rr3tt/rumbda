@@ -15,7 +15,7 @@ exports.handler = function(event, context) {
     if (err) throw err;
 
     execFile('./ruby_wrapper', [fileName, JSON.stringify(context)], {}, (error, stdout, stderr) => {
-      stdout.trim().split("\n").forEach(function(x)
+      stdout.trim().split("\n").forEach(function(x) {
         log = x.trim();
         if (log !== "") {
           console.log(log);
