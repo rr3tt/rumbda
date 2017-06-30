@@ -2,8 +2,6 @@ const execFile = require('child_process').execFile;
 const fs = require("fs");
 
 exports.handler = function(event, context) {
-  const chunkSize = process.env.CHUNK_SIZE || 10;
-
   var records = event.Records;
   var context = context;
 
