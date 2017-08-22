@@ -14,18 +14,13 @@ exports.handler = function(event, context, callback) {
 
     if (fs.existsSync(jsonFilePath)) {
       fs.readFile(jsonFilePath, 'utf8', function (err, data) {
-        if (err) {
-          fs.unlink(jsonFilePath); 
-
-          return callback(err);
-        }
-        if (data.length > 0) {
-          callback(null, JSON.parse(data));
-        } else {
-          callback(null, data);
-        }
-
         fs.unlink(jsonFilePath); 
+
+        if (err) {
+          callback(err);
+          return;
+        }
+        callback(null, (data.length > 0) ? JSON.parse(data) : null);
       });
     } else {
       callback(null);
