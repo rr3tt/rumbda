@@ -6,11 +6,17 @@ exports.handler = function(event, context, callback) {
   const jsonFilePath = '/tmp/rumbda.json';
   event['RUMBDA_RESULT_JSON_FILENAME'] = jsonFilePath;
 
-  const child = exec('./ruby_wrapper ' + "'" +  JSON.stringify(event) + "'", (result) => {
+  const child = exec('./ruby_wrapper ' + "'" +  JSON.stringify(event) + "'", (error, stdout, stderr) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+
     if (fs.existsSync(jsonFilePath)) {
       fs.readFile(jsonFilePath, 'utf8', function (err, data) {
         if (err) {
           fs.unlink(jsonFilePath); 
+
           return callback(err);
         }
         if (data.length > 0) {
@@ -22,7 +28,7 @@ exports.handler = function(event, context, callback) {
         fs.unlink(jsonFilePath); 
       });
     } else {
-      callback(null, result);
+      callback(null);
     }
   });
 
