@@ -3,8 +3,8 @@ const fs = require('fs');
 
 exports.handler = function(event, context, callback) {
   // In order to return a value and not deal with stdout rumbda watches a file.
-  const jsonFilePath = '/tmp/rumbda.json';
-  event['RUMBDA_RESULT_JSON_FILENAME'] = jsonFilePath;
+  const jsonFilePath = '/tmp/rumbda.' + Math.random() + '.json';
+  process.env['RUMBDA_RESULT_JSON_FILENAME'] = jsonFilePath;
 
   const child = exec('./ruby_wrapper ' + "'" +  JSON.stringify(event) + "'", (error, stdout, stderr) => {
     if (error) {
@@ -30,3 +30,4 @@ exports.handler = function(event, context, callback) {
   child.stdout.on('data', console.log);
   child.stderr.on('data', console.error);
 };
+

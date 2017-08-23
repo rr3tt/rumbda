@@ -62,6 +62,17 @@ If testing the script locally, simply pass in a json as the first argument to th
 $ ruby main.rb "$(cat test_event.json)"
 ```
 
+## Return JSON for API Gateway
+If needing to return JSON from your lambda (e.g. for use in AWS API Gateway) write to a file path provided in your lambda's environment at key 'RUMBDA_RESULT_JSON_FILENAME'.
+
+```ruby
+File.open(ENV['RUMBDA_RESULT_JSON_FILENAME'], 'w') do |file|
+  file.write(JSON.dump({ statusCode: 200, body: '' }))
+end
+```
+
+The file contents should be valid JSON.
+
 ## Command Reference
 | Command        | Purpose                                                                                                                    |
 |:---------------|:---------------------------------------------------------------------------------------------------------------------------|
