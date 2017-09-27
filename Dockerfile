@@ -1,24 +1,25 @@
 FROM ruby:2.2.2
 
+# The bundler mangling below is because of
+# traveling ruby as well as the dependency on ruby 2.2.2.
+
 RUN apt-get update && \
-    apt-get install zip unzip
+    apt-get install zip unzip && \
+    gem uninstall -a bundler && \
+    gem install bundler -v 1.9.9 
 
-# TODO Tie rumbda gem version
-# https://docs.docker.com/engine/reference/builder/#using-arg-variables
+# Rumbda version to build
+ARG VERSION
 
-WORKDIR /app/
+COPY rumbda-${VERSION}.gem /tmp
+WORKDIR /tmp
+RUN gem install rumbda-${VERSION}.gem
+RUN rm -rf /tmp
 
-# Install the version of bundler needed by traveling ruby
-RUN gem uninstall -a bundler && \
-  gem install bundler -v 1.9.9
-
-COPY rumbda-1.1.0.SNAPSHOT.gem .
-
-# TODO figure out how to share version number
-RUN gem install rumbda-1.1.0.SNAPSHOT.gem
-
-# Mount point to interact with the file system of the host.
+# Mount point to interact with the file system of the host
 VOLUME /src
 WORKDIR /src
+
+# Pass all commands to rumbda
 ENTRYPOINT ["rumbda"]
 
