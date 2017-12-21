@@ -6,7 +6,7 @@ exports.handler = function(event, context, callback) {
   const jsonFilePath = '/tmp/rumbda.' + Math.random() + '.json';
   process.env['RUMBDA_RESULT_JSON_FILENAME'] = jsonFilePath;
 
-  const child = exec('./ruby_wrapper ' + "'" +  JSON.stringify(event) + "'", (error, stdout, stderr) => {
+  const child = exec('./ruby_wrapper ' + "'" +  JSON.stringify(event) + "' '" + JSON.stringify(context) + "'", (error, stdout, stderr) => {
     if (error) {
       callback(error);
       return;
