@@ -13,13 +13,19 @@ module Rumbda
 
       vendor_dir = File.join(temp_dir, 'vendor')
 
-      FileUtils.mkdir_p(dest_source_code_dir)
-      FileUtils.mkdir_p(vendor_dir)
-      FileUtils.cp_r(Dir.glob(File.join(dir_to_build, 'source', '*')), dest_source_code_dir)
-      FileUtils.cp_r(File.join(dir_to_build, 'Gemfile'), dest_source_code_dir)
-      FileUtils.cp_r(File.join(dir_to_build, 'Gemfile.lock'), dest_source_code_dir)
-      FileUtils.mv(File.join(dest_source_code_dir, 'Gemfile'), vendor_dir)
-      FileUtils.mv(File.join(dest_source_code_dir, 'Gemfile.lock'), vendor_dir)
+      # If we're removed files since last build, make sure they are not present
+      # in the new bundle.
+      FileUtils.rm_rf(dest_source_code_dir)
+
+      # Use system calls directly instead of FileUtils because some OS were
+      # copying stale source files and truncating the source files when copied.
+      system("mkdir -p #{dest_source_code_dir}")
+      system("mkdir -p #{vendor_dir}")
+      Dir.glob(File.join(dir_to_build, 'source', '*')).each do |f|
+        system("cp -r #{f} #{File.join(dest_source_code_dir, '/')}")
+      end
+      system("cp #{File.join(dir_to_build, 'Gemfile')} #{File.join(vendor_dir, '/')}")
+      system("cp #{File.join(dir_to_build, 'Gemfile.lock')} #{File.join(vendor_dir, '/')}")
 
       Dir.chdir(TEMP_DIRECTORY_NAME) do
         bundle_install(vendor_dir)
@@ -77,7 +83,7 @@ module Rumbda
       Bundler.with_clean_env do
         success = system(
           "cd #{dir_with_gemfile} && " \
-          'env BUNDLE_IGNORE_CONFIG=1 bundle install --path . --without development'
+          'env BUNDLE_IGNORE_CONFIG=1 bundle install --path . --without development --deployment --clean'
         )
 
         abort('Bundle install failed, exiting.') unless success
