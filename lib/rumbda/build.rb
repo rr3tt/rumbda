@@ -83,7 +83,7 @@ module Rumbda
       Bundler.with_clean_env do
         success = system(
           "cd #{dir_with_gemfile} && " \
-          'env BUNDLE_IGNORE_CONFIG=1 bundle install --path . --without development'
+          'env BUNDLE_IGNORE_CONFIG=1 bundle install --path . --without development --deployment --clean'
         )
 
         abort('Bundle install failed, exiting.') unless success
